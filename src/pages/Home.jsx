@@ -1,13 +1,9 @@
 import { useState } from "react";
 import PostCard from "../components/PostCard";
+import posts from "../data/posts.json";
 
 export default function Home() {
   const [showPosts, setShowPosts] = useState(false);
-
-  const posts = [
-    { id: 1, title: "Первый пост", content: "Текст первого" },
-    { id: 2, title: "Второй пост", content: "Текст второго" },
-  ];
 
   const handleShowPosts = () => {
     setShowPosts(!showPosts);
@@ -20,7 +16,12 @@ export default function Home() {
       {showPosts && (
         <div>
           {posts.map((post) => (
-            <PostCard key={post.id} title={post.title} content={post.content} />
+            <PostCard
+              key={post.id}
+              id={post.id}
+              title={post.title}
+              content={post.content}
+            />
           ))}
         </div>
       )}
