@@ -9,11 +9,13 @@ export default function Post() {
     return "page not found";
   }
   return (
-    <PostCard
-      key={findPost.id}
-      id={findPost.id}
-      title={findPost.title}
-      content={findPost.content}
-    />
+    <>
+      <PostCard
+        key={findPost.id}
+        id={findPost.id}
+        title={findPost.title}
+        content={findPost.content}
+      />
+    </>
   );
 }
