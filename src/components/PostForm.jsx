@@ -3,13 +3,21 @@ import { useState } from "react";
 export default function PostForm({ onAdd }) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [error, setError] = useState("");
+
+  const handleInputChange = (e) => {
+    setTitle(e.target.value);
+    if (error) setError("");
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (title === "") {
+    const trimmedTitle = title.trim();
+    if (trimmedTitle === "") {
+      setError("Поле не должно быть пустым!");
       return;
     }
-    onAdd({ title: title, content: content });
+    onAdd({ title: trimmedTitle, content: content });
     setTitle("");
     setContent("");
   };
@@ -18,11 +26,7 @@ export default function PostForm({ onAdd }) {
     <>
       <form onSubmit={handleSubmit}>
         <label htmlFor="title">title:</label>
-        <input
-          name="title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+        <input name="title" value={title} onChange={handleInputChange} />
         <label htmlFor="content">content:</label>
         <input
           name="content"
@@ -32,6 +36,7 @@ export default function PostForm({ onAdd }) {
         <button type="submit" value="Submit">
           Submit
         </button>
+        {error && <p style={{ color: "red" }}>{error}</p>}
       </form>
     </>
   );
