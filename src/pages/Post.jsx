@@ -1,20 +1,38 @@
 import { useParams } from "react-router-dom";
 import PostCard from "../components/PostCard";
-import posts from "../data/posts.json";
+import { useState } from "react";
+import { getPost } from "../lib/api";
+import { useEffect } from "react";
 
 export default function Post() {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [posts, setPosts] = useState(null);
+
   const { id } = useParams();
-  const findPost = posts.find((post) => post.id === Number(id));
-  if (!findPost) {
-    return "page not found";
+
+  useEffect(() => {
+    getPost(id)
+      .then((data) => setPosts(data))
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <>
       <PostCard
-        key={findPost.id}
-        id={findPost.id}
-        title={findPost.title}
-        content={findPost.content}
+        key={posts.id}
+        id={posts.id}
+        title={posts.title}
+        content={posts.content}
       />
     </>
   );

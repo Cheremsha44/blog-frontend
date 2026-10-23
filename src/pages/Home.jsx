@@ -2,9 +2,13 @@ import { useState } from "react";
 import PostCard from "../components/PostCard";
 import initialPosts from "../data/posts.json";
 import PostForm from "../components/PostForm";
+import getData from "../lib/api";
+import { useEffect } from "react";
 
 export default function Home() {
   const [showPosts, setShowPosts] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [posts, setPosts] = useState(initialPosts);
 
   const handleShowPosts = () => {
@@ -19,6 +23,21 @@ export default function Home() {
     };
     setPosts([...posts, newPost]);
   };
+
+  useEffect(() => {
+    getData()
+      .then((data) => setPosts(data.posts))
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div>
