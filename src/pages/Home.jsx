@@ -3,11 +3,13 @@ import PostCard from "../components/PostCard";
 import initialPosts from "../data/posts.json";
 import PostForm from "../components/PostForm";
 import getData from "../lib/api";
+import { useAuth } from "../context/auth";
 
 import { useEffect } from "react";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
   const [error, setError] = useState(null);
   const [posts, setPosts] = useState(initialPosts);
 
@@ -50,14 +52,18 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Секция создания поста */}
-      <section className="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200/80 mb-12">
-        <h2 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-          <span className="w-2 h-5 bg-indigo-600 rounded-full inline-block"></span>
-          Создать новый пост
-        </h2>
-        <PostForm onAdd={handleAddPost} />
-      </section>
+      {user && (
+        <>
+          {/* Секция создания поста */}
+          <section className="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200/80 mb-12">
+            <h2 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+              <span className="w-2 h-5 bg-indigo-600 rounded-full inline-block"></span>
+              Создать новый пост
+            </h2>
+            <PostForm onAdd={handleAddPost} />
+          </section>
+        </>
+      )}
 
       {/* Лента постов */}
       <section>

@@ -8,6 +8,7 @@ import About from "../pages/About";
 import Contact from "../pages/Contact";
 import NotFound from "../pages/NotFound";
 import Post from "../pages/Post";
+import Profile from "../pages/Profile";
 
 export const router = createBrowserRouter([
   {
@@ -41,6 +42,10 @@ export const router = createBrowserRouter([
       {
         path: "not-found",
         element: <NotFound />,
+      },
+      {
+        path: "profile",
+        element: <Profile />,
       },
     ],
   },
