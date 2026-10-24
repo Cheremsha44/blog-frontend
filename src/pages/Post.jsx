@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/auth";
 import { CounterLike } from "../components/CounterLike";
+import CommentsSection from "../components/CommentsSection";
 
 export default function PostPage() {
   const { id } = useParams();
@@ -9,20 +10,47 @@ export default function PostPage() {
   const { user } = useAuth();
 
   const [post, setPost] = useState(null);
+  const [comments, setComments] = useState([]); // Стейт для комментариев из БД
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Замени на свой эндпоинт получения одного поста
-    fetch(`/api/posts/${id}`)
-      .then((r) => {
-        if (!r.ok) throw new Error("Пост не найден");
-        return r.json();
-      })
-      .then((data) => setPost(data))
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
+    // Загружаем и пост, и комментарии параллельно при открытии страницы
+    const fetchPostData = async () => {
+      try {
+        setLoading(true);
+        const [postRes, commentsRes] = await Promise.all([
+          fetch(`/api/posts/${id}`),
+          fetch(`/api/posts/${id}/comments`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }), // <-- Твой эндпоинт, который вызывает getComments
+        ]);
+
+        if (!postRes.ok) throw new Error("Пост не найден");
+
+        const postData = await postRes.json();
+        setPost(postData);
+
+        if (commentsRes.ok) {
+          const commentsData = await commentsRes.json();
+          setComments(commentsData); // Записываем комменты в стейт
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPostData();
   }, [id]);
+
+  // Функция добавления нового комментария в список локально после отправки
+  const handleAddComment = (newComment) => {
+    setComments([newComment, ...comments]);
+  };
 
   if (loading) {
     return (
@@ -47,13 +75,11 @@ export default function PostPage() {
     );
   }
 
-  // Проверяем, наш ли это пост (подставь свое поле с бэка, например post.userId или post.authorId)
   const isOwner =
     user && (user.id === post.authorId || user.id === post.userId);
 
   return (
     <div className="max-w-3xl w-full mx-auto px-4 sm:px-6 py-10">
-      {/* Верхняя навигация */}
       <div className="flex items-center justify-between mb-6">
         <button
           onClick={() => navigate(-1)}
@@ -72,7 +98,6 @@ export default function PostPage() {
         )}
       </div>
 
-      {/* Контент статьи */}
       <article className="bg-white rounded-3xl shadow-sm border border-slate-200/80 p-6 sm:p-10">
         <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
           {post.title}
@@ -88,15 +113,20 @@ export default function PostPage() {
           </span>
         </div>
 
-        {/* whitespace-pre-wrap сохраняет абзацы и переносы строк из textarea */}
         <div className="text-slate-700 leading-relaxed whitespace-pre-wrap text-base sm:text-lg mb-8">
           {post.content}
         </div>
 
-        {/* Подвал статьи с лайком */}
-        <div className="pt-6 border-t border-slate-100 flex items-center justify-between">
+        <div className="pt-6 border-t border-slate-100 flex items-center justify-between mb-2">
           <CounterLike />
         </div>
+
+        {/* Передаем загруженные из базы комментарии в компонент */}
+        <CommentsSection
+          postId={id}
+          comments={comments}
+          onAddComment={handleAddComment}
+        />
       </article>
     </div>
   );
