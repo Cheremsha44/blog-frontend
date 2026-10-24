@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../context/auth";
 import PostCard from "../components/PostCard";
 import PostForm from "../components/PostForm";
+import { Link } from "react-router-dom";
 import { getMyPosts } from "../lib/api";
 
 export default function Profile() {
@@ -18,6 +19,18 @@ export default function Profile() {
       content: content,
     };
     setPosts([newPost, ...posts]); // Добавляем новый пост в начало списка
+  };
+
+  const handleDeletePost = async (id) => {
+    const token = localStorage.getItem("token");
+    if (!window.confirm("Точно удалить этот пост?")) return;
+    await fetch(`/api/posts/${id}`, {
+      method: "delete",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setPosts(posts.filter((p) => p.id !== id));
   };
 
   useEffect(() => {
@@ -128,6 +141,35 @@ export default function Profile() {
                 id={post.id}
                 title={post.title}
                 content={post.content}
+                actions={
+                  <>
+                    <div className="flex items-center gap-2">
+                      {/* Кнопка Редактировать */}
+                      <Link
+                        to={`/post/${post.id}/edit`}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
+                      >
+                        Изменить
+                      </Link>
+
+                      {/* Кнопка Удалить */}
+                      <button
+                        onClick={() => handleDeletePost(post.id)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-red-50 text-red-600 hover:bg-red-100 transition-colors cursor-pointer"
+                      >
+                        Удалить
+                      </button>
+                    </div>
+
+                    {/* Ссылка на просмотр */}
+                    <Link
+                      to={`/post/${post.id}`}
+                      className="text-xs font-semibold text-slate-400 hover:text-indigo-600 transition-colors"
+                    >
+                      Открыть →
+                    </Link>
+                  </>
+                }
               />
             ))}
           </div>

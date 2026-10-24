@@ -9,6 +9,7 @@ import Contact from "../pages/Contact";
 import NotFound from "../pages/NotFound";
 import Post from "../pages/Post";
 import Profile from "../pages/Profile";
+import EditPost from "../pages/EditPost";
 
 export const router = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
       {
         path: "post/:id",
         element: <Post />,
+      },
+      {
+        path: "post/:id/edit",
+        element: <EditPost />,
       },
       {
         path: "not-found",

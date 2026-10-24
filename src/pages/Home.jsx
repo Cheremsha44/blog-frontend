@@ -1,6 +1,8 @@
 import { useState } from "react";
 import PostCard from "../components/PostCard";
+import { CounterLike } from "../components/CounterLike";
 import initialPosts from "../data/posts.json";
+import { Link } from "react-router-dom";
 import PostForm from "../components/PostForm";
 import getData from "../lib/api";
 import { useAuth } from "../context/auth";
@@ -91,6 +93,17 @@ export default function Home() {
                 id={post.id}
                 title={post.title}
                 content={post.content}
+                actions={
+                  <>
+                    <CounterLike />
+                    <Link
+                      to={`/post/${post.id}`}
+                      className="text-sm font-medium text-indigo-600 hover:text-indigo-700 inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform"
+                    >
+                      Читать далее <span>→</span>
+                    </Link>
+                  </>
+                }
               />
             ))}
           </div>
