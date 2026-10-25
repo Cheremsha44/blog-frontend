@@ -5,6 +5,8 @@ import PostForm from "../components/PostForm";
 import { Link } from "react-router-dom";
 import { getMyPosts } from "../lib/api";
 
+import { API_URL } from "../lib/config";
+
 export default function Profile() {
   const { user } = useAuth();
   const [posts, setPosts] = useState([]);
@@ -24,7 +26,7 @@ export default function Profile() {
   const handleDeletePost = async (id) => {
     const token = localStorage.getItem("token");
     if (!window.confirm("Точно удалить этот пост?")) return;
-    await fetch(`/api/posts/${id}`, {
+    await fetch(`${API_URL}/api/posts/${id}`, {
       method: "delete",
       headers: {
         Authorization: `Bearer ${token}`,

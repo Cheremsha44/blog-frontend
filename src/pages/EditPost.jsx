@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { API_URL } from "../lib/config";
 
 export default function EditPost() {
   const { id } = useParams();
@@ -14,7 +15,7 @@ export default function EditPost() {
 
   // 1. Загружаем текущие данные поста
   useEffect(() => {
-    fetch(`/api/posts/${id}`)
+    fetch(`${API_URL}/api/posts/${id}`)
       .then((r) => {
         if (!r.ok) throw new Error("Не удалось загрузить пост");
         return r.json();
@@ -36,7 +37,7 @@ export default function EditPost() {
 
     try {
       const token = localStorage.getItem("token");
-      const r = await fetch(`/api/posts/${id}`, {
+      const r = await fetch(`${API_URL}/api/posts/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

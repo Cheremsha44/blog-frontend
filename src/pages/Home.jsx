@@ -1,7 +1,7 @@
 import { useState } from "react";
 import PostCard from "../components/PostCard";
 import { CounterLike } from "../components/CounterLike";
-import initialPosts from "../data/posts.json";
+
 import { Link } from "react-router-dom";
 import PostForm from "../components/PostForm";
 import getData from "../lib/api";
@@ -13,7 +13,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const [error, setError] = useState(null);
-  const [posts, setPosts] = useState(initialPosts);
+  const [posts, setPosts] = useState([]);
 
   const handleAddPost = (data) => {
     const { title, content } = data;

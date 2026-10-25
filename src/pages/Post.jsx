@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/auth";
 import { CounterLike } from "../components/CounterLike";
 import CommentsSection from "../components/CommentsSection";
+import { API_URL } from "../lib/config";
 
 export default function PostPage() {
   const { id } = useParams();
@@ -20,8 +21,8 @@ export default function PostPage() {
       try {
         setLoading(true);
         const [postRes, commentsRes] = await Promise.all([
-          fetch(`/api/posts/${id}`),
-          fetch(`/api/posts/${id}/comments`, {
+          fetch(`${API_URL}/api/posts/${id}`),
+          fetch(`${API_URL}/api/posts/${id}/comments`, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },

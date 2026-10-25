@@ -117,7 +117,7 @@ export default function RegistrationForm() {
               id="password"
               required
               autoComplete="new-password"
-              placeholder="Минимум 6 символов"
+              placeholder="Минимум 8 символов"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-slate-900 placeholder:text-slate-400"
