@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { AuthContext } from "./auth";
 
+import { API_URL } from "../lib/config";
+
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
@@ -8,7 +10,7 @@ export default function AuthProvider({ children }) {
     const token = localStorage.getItem("token");
     if (!token) return;
 
-    fetch("/api/auth/me", {
+    fetch(`${API_URL}/api/auth/me`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => (r.ok ? r.json() : null))

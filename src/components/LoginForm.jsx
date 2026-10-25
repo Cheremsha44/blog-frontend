@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/auth";
+import { API_URL } from "../lib/config";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -17,7 +18,7 @@ export default function LoginForm() {
     setIsLoading(true);
     setErrors([]); // Очищаем старые ошибки перед новым запросом
 
-    fetch("/api/auth/login", {
+    fetch(`${API_URL}/api/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

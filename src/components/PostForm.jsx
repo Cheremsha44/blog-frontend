@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_URL } from "../lib/config";
 
 export default function PostForm({ onAdd }) {
   const [title, setTitle] = useState("");
@@ -27,7 +28,7 @@ export default function PostForm({ onAdd }) {
 
     setIsLoading(true);
 
-    fetch("/api/posts/", {
+    fetch(`${API_URL}/api/posts/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

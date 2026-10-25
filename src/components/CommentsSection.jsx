@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../context/auth";
+import { API_URL } from "../lib/config";
 
 export default function CommentsSection({
   postId,
@@ -18,7 +19,7 @@ export default function CommentsSection({
 
     const token = localStorage.getItem("token");
 
-    fetch(`/api/posts/${postId}/comments`, {
+    fetch(`${API_URL}/api/posts/${postId}/comments`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

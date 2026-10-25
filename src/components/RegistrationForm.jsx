@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { API_URL } from "../lib/config";
 
 export default function RegistrationForm() {
   const [email, setEmail] = useState("");
@@ -13,7 +14,7 @@ export default function RegistrationForm() {
     setIsLoading(true);
     setErrors([]);
 
-    fetch("/api/auth/registration", {
+    fetch(`${API_URL}/api/auth/registration`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
