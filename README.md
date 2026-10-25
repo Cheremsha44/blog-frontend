@@ -1,16 +1,97 @@
-# React + Vite
+# Blog Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React single-page app for a blog: browse posts, read a post, register and log in, and manage your own posts from a profile page. It talks to a separate REST API.
 
-Currently, two official plugins are available:
+**Live demo:** https://clever-moonbeam-39a68f.netlify.app
+**Backend repository:** https://github.com/Cheremsha44/blog-api-backend
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+> The API runs on a free Render instance, so the first load after a period of inactivity can take up to ~50 seconds while the server wakes up.
 
-## React Compiler
+<!-- Add a screenshot or GIF of the app here, e.g. ![Blog](docs/screenshot.png) -->
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Features
 
-## Expanding the ESLint configuration
+- Public feed with posts loaded from the API
+- Post page with author and content
+- Registration and login
+- Session restored on page reload (token in `localStorage`, user fetched from `/api/auth/me`)
+- Profile page with the user's own posts, including drafts
+- Create posts as a draft or publish immediately
+- Loading and error states for every request, form validation with inline messages
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Tech stack
+
+| Area    | Tools                                                             |
+| ------- | ----------------------------------------------------------------- |
+| UI      | React, Vite                                                       |
+| Routing | React Router (`createBrowserRouter`, nested layout with `Outlet`) |
+| State   | `useState`, `useEffect`, Context API for authentication           |
+| Styling | Tailwind CSS                                                      |
+| Hosting | Netlify                                                           |
+
+## How authentication works
+
+1. The login or registration form sends credentials to the API and receives `{ user, token }`.
+2. `AuthProvider` stores the token in `localStorage` and the user in React context, so the header and pages update immediately without a reload.
+3. On app start the provider reads the token and asks `GET /api/auth/me` who the user is.
+4. Requests that need authorization send `Authorization: Bearer <token>`.
+5. Logout removes the token and clears the user.
+
+## Project structure
+
+```
+src/
+  components/    Header, Footer, RootLayout, PostCard, forms
+  context/       auth context and AuthProvider
+  lib/           API helpers and config
+  pages/         Home, Post, Profile, Login, Registration, About, Contacts
+  routes/        router configuration
+```
+
+## Getting started
+
+Requirements: Node.js 20+ and the [backend](https://github.com/Cheremsha44/blog-api-backend) running locally on port 3000.
+
+```bash
+git clone https://github.com/Cheremsha44/blog-frontend
+cd blog-frontend
+npm install
+npm run dev
+```
+
+The app opens on `http://localhost:5173`. In development the Vite dev server proxies `/api` to `http://localhost:3000`, so no extra configuration is needed.
+
+### Environment variables
+
+| Variable       | Description                                                                  |
+| -------------- | ---------------------------------------------------------------------------- |
+| `VITE_API_URL` | Base URL of the deployed API, without a trailing slash (leave unset locally) |
+
+Vite inlines `VITE_*` variables at build time, so rebuild after changing them.
+
+## Deployment
+
+Deployed on Netlify:
+
+- Build command: `npm run build`
+- Publish directory: `dist`
+- Environment variable: `VITE_API_URL` set to the API origin
+- `netlify.toml` rewrites all routes to `index.html` so deep links such as `/post/123` work after a refresh
+
+The API must allow the site origin through its `CLIENT_URL` setting (CORS).
+
+## Notes
+
+- The JWT is kept in `localStorage`, which is simple but exposed to XSS. For a production system an httpOnly cookie would be safer.
+- Access control is enforced by the API. Hiding buttons in the UI is only a convenience.
+
+## Roadmap
+
+- Edit posts from the profile page
+- Pagination controls on the feed
+- Comments UI on the post page
+- Better handling of the API cold start
+
+## Author
+
+Built by [Cheremsha44](https://github.com/Cheremsha44).
